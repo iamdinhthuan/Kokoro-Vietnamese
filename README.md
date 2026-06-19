@@ -20,24 +20,7 @@ when local paths are not provided:
 - `kokoro_vi_voicepack.pt`
 - `config.json`
 
-Named voices:
-
-| Voice | HF file |
-| --- | --- |
-| `diem_trinh` | `voicepacks/diem_trinh.pt` |
-| `hung_thinh` | `voicepacks/hung_thinh.pt` |
-| `mai_linh` | `voicepacks/mai_linh.pt` |
-| `mai_loan` | `voicepacks/mai_loan.pt` |
-| `manh_dung` | `voicepacks/manh_dung.pt` |
-| `my_yen` | `voicepacks/my_yen.pt` |
-| `ngoc_huyen` | `voicepacks/ngoc_huyen.pt` |
-| `phat_tai` | `voicepacks/phat_tai.pt` |
-| `thanh_dat` | `voicepacks/thanh_dat.pt` |
-| `thuc_trinh` | `voicepacks/thuc_trinh.pt` |
-| `tuan_ngoc` | `voicepacks/tuan_ngoc.pt` |
-| `storyvert` | `voicepacks/storyvert.pt` |
-| `duc_an` | `voicepacks/duc_an.pt` |
-| `duc_duy` | `voicepacks/duc_duy.pt` |
+Voices: Diễm Trinh, Hưng Thịnh, Mai Linh, Mai Loan, Mạnh Dũng, Mỹ Yến, Ngọc Huyền, Phát Tài, Thành Đạt, Thục Trinh, Tuấn Ngọc, Storyvert, Đức An, Đức Duy.
 
 ## Python API
 
