@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+from importlib import metadata
 
 import numpy as np
 
@@ -105,6 +106,46 @@ def _download_or_resolve(repo_id: str, filename: str, local_path: str | Path | N
     return Path(hf_hub_download(repo_id=repo_id, filename=filename))
 
 
+def prepare_transformers_for_kokoro() -> None:
+    try:
+        import transformers
+        import transformers.utils.import_utils as import_utils
+        from packaging.version import Version
+    except Exception as exc:
+        raise RuntimeError('Install transformers>=4.48,<5 for Kokoro.') from exc
+
+    version = Version(metadata.version('transformers'))
+    if version.major >= 5:
+        raise RuntimeError(
+            f'transformers {version} is not supported by this package. '
+            'Run: pip install "transformers>=4.48,<5"'
+        )
+
+    # Kokoro only uses ALBERT text modules. Broken optional vision/audio packages
+    # such as an incompatible torchvision can make transformers lazy imports fail.
+    for flag in ('_torchvision_available', '_librosa_available', '_cv2_available'):
+        if hasattr(import_utils, flag):
+            setattr(import_utils, flag, False)
+    if hasattr(import_utils, '_torchvision_version'):
+        import_utils._torchvision_version = 'N/A'
+
+    try:
+        from transformers import AlbertModel  # noqa: F401
+    except Exception as exc:
+        details = []
+        for package in ('transformers', 'torch', 'torchvision', 'librosa', 'numpy'):
+            try:
+                details.append(f'{package}={metadata.version(package)}')
+            except metadata.PackageNotFoundError:
+                details.append(f'{package}=not-installed')
+        raise RuntimeError(
+            'Failed to import transformers.AlbertModel for Kokoro. '
+            f'Environment: {", ".join(details)}. '
+            'Try: pip uninstall -y torchvision librosa && '
+            'pip install "transformers>=4.48,<5"'
+        ) from exc
+
+
 class KokoroVietnamese:
     def __init__(
         self,
@@ -117,6 +158,7 @@ class KokoroVietnamese:
         device: str = 'cuda',
     ) -> None:
         import torch
+        prepare_transformers_for_kokoro()
         from kokoro import KModel
 
         if device == 'cuda' and not torch.cuda.is_available():

@@ -14,6 +14,7 @@ from kokoro_vietnamese import (
     list_voices,
     merge_audio_chunks,
     phonemize,
+    prepare_transformers_for_kokoro,
     resolve_voicepack_filename,
     split_text,
 )
@@ -97,6 +98,13 @@ class KokoroVietnameseInferenceTest(unittest.TestCase):
         pyproject = tomllib.loads(Path('pyproject.toml').read_text(encoding='utf-8'))
         dependencies = pyproject['project']['dependencies']
         self.assertIn('transformers>=4.48,<5', dependencies)
+        self.assertIn('packaging', dependencies)
+
+    def test_transformers_preflight_imports_albert_model(self):
+        prepare_transformers_for_kokoro()
+        from transformers import AlbertModel
+
+        self.assertIsNotNone(AlbertModel)
 
 
 if __name__ == '__main__':

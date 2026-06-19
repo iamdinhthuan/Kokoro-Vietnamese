@@ -83,3 +83,9 @@ kokoro-vietnamese \
 ```bash
 kokoro-vietnamese-gradio --device cuda --share
 ```
+
+If `AlbertModel` fails to import in an old environment:
+
+```bash
+pip install -U git+https://github.com/iamdinhthuan/Kokoro-Vietnamese.git "transformers>=4.48,<5"
+```

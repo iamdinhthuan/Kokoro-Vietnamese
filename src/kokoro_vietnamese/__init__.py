@@ -11,6 +11,7 @@ from .core import (
     list_voices,
     merge_audio_chunks,
     phonemize,
+    prepare_transformers_for_kokoro,
     resolve_voicepack_filename,
     split_text,
 )
@@ -28,6 +29,7 @@ __all__ = [
     'list_voices',
     'merge_audio_chunks',
     'phonemize',
+    'prepare_transformers_for_kokoro',
     'resolve_voicepack_filename',
     'split_text',
 ]

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import traceback
 from dataclasses import dataclass
 
 from .core import DEFAULT_CROSSFADE_MS, DEFAULT_HF_REPO_ID, DEFAULT_VOICE, SAMPLE_RATE, VOICES, KokoroVietnamese
@@ -108,7 +109,7 @@ class GradioSynthesizer:
                 crossfade_ms=int(crossfade_ms),
             )
         except Exception as exc:
-            return None, '', f'Lỗi: {exc}'
+            return None, traceback.format_exc(limit=6), f'Lỗi: {exc}'
         if len(audio) == 0:
             return None, phonemes, 'Không tạo được audio.'
         label = VOICES.get(voice, {}).get('label', voice)

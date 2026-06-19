@@ -16,6 +16,7 @@ dependencies = [
     "kokoro>=0.9.4",
     "misaki[en]>=0.9.4",
     "numpy",
+    "packaging",
     "soundfile",
     "torch",
     "transformers>=4.48,<5",
