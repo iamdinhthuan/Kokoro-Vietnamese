@@ -39,8 +39,13 @@ sf.write("outputs/sample.wav", audio, 24000)
 print(phonemes)
 ```
 
-`synthesize()` peak-normalizes generated audio to `0.95` by default so WAV and
-Gradio playback do not clip. Pass `normalize_peak=None` to disable it.
+The package uses the same Kokoro runtime path as the original Gradio predictor.
+Pass `normalize_peak=0.95` only if you want optional peak limiting before
+writing WAV files.
+
+```python
+audio, phonemes = tts.synthesize("Tường nhà khách.", normalize_peak=0.95)
+```
 
 Use another voice:
 

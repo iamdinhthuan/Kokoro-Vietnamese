@@ -36,7 +36,7 @@ def build_parser() -> argparse.ArgumentParser:
         '--normalize-peak',
         type=float,
         default=DEFAULT_NORMALIZE_PEAK,
-        help='Scale audio down when peak amplitude exceeds this value. Use 0 to disable.',
+        help='Optionally scale audio down when peak amplitude exceeds this value. Disabled by default.',
     )
     parser.add_argument('--print-phonemes', action='store_true', help='Print generated phonemes')
     parser.add_argument('--list-voices', action='store_true', help='Print available voice names and exit')

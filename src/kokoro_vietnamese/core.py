@@ -14,7 +14,7 @@ DEFAULT_CONFIG_FILE = 'config.json'
 DEFAULT_VOICE = 'diem_trinh'
 SAMPLE_RATE = 24000
 DEFAULT_CROSSFADE_MS = 50
-DEFAULT_NORMALIZE_PEAK = 0.95
+DEFAULT_NORMALIZE_PEAK: float | None = None
 VOICES = {
     'diem_trinh': {'label': 'Diễm Trinh', 'filename': 'voicepacks/diem_trinh.pt'},
     'hung_thinh': {'label': 'Hưng Thịnh', 'filename': 'voicepacks/hung_thinh.pt'},
@@ -171,7 +171,7 @@ class KokoroVietnamese:
     ) -> None:
         import torch
         prepare_transformers_for_kokoro()
-        from kokoro import KModel
+        from ._kokoro import KModel
 
         if device == 'cuda' and not torch.cuda.is_available():
             device = 'cpu'

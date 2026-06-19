@@ -30,7 +30,7 @@ class KokoroVietnameseInferenceTest(unittest.TestCase):
         self.assertEqual(DEFAULT_VOICEPACK_FILE, 'kokoro_vi_voicepack.pt')
         self.assertEqual(DEFAULT_CONFIG_FILE, 'config.json')
         self.assertEqual(DEFAULT_VOICE, 'diem_trinh')
-        self.assertEqual(DEFAULT_NORMALIZE_PEAK, 0.95)
+        self.assertIsNone(DEFAULT_NORMALIZE_PEAK)
 
     def test_voice_registry_covers_all_larvoice_speakers_without_pro_suffix(self):
         expected = {
@@ -120,6 +120,11 @@ class KokoroVietnameseInferenceTest(unittest.TestCase):
         from transformers import AlbertModel
 
         self.assertIsNotNone(AlbertModel)
+
+    def test_uses_vendored_kokoro_runtime(self):
+        from kokoro_vietnamese._kokoro import KModel
+
+        self.assertEqual(KModel.__module__, 'kokoro_vietnamese._kokoro.model')
 
 
 if __name__ == '__main__':
