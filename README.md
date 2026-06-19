@@ -77,3 +77,9 @@ kokoro-vietnamese \
   --voice diem_trinh \
   --output-dir outputs/batch
 ```
+
+## Gradio
+
+```bash
+kokoro-vietnamese-gradio --device cuda --share
+```

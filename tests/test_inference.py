@@ -15,6 +15,7 @@ from kokoro_vietnamese import (
     resolve_voicepack_filename,
     split_text,
 )
+from kokoro_vietnamese.gradio_app import DEMO_EXAMPLES, build_voice_choices
 
 
 class KokoroVietnameseInferenceTest(unittest.TestCase):
@@ -77,6 +78,18 @@ class KokoroVietnameseInferenceTest(unittest.TestCase):
     def test_vig2p_preserves_vietnamese_t_and_th_contrast(self):
         self.assertEqual(phonemize('Tường nhà khách.'), 'tˈyə↘ŋ ɲˈaː↘ xˈæ↗c.')
         self.assertEqual(phonemize('Thường nhà khách.'), 'θˈyə↘ŋ ɲˈaː↘ xˈæ↗c.')
+
+    def test_gradio_has_multiple_vietnamese_demos_and_all_voices(self):
+        self.assertGreaterEqual(len(DEMO_EXAMPLES), 10)
+        for text, voice, speed in DEMO_EXAMPLES:
+            self.assertIsInstance(text, str)
+            self.assertGreater(len(text), 20)
+            self.assertIn(voice, VOICES)
+            self.assertGreater(speed, 0)
+
+        choices = build_voice_choices()
+        self.assertEqual(len(choices), len(VOICES))
+        self.assertIn(('Diễm Trinh', 'diem_trinh'), choices)
 
 
 if __name__ == '__main__':

@@ -11,6 +11,7 @@ requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 authors = [{ name = "iamdinhthuan" }]
 dependencies = [
+    "gradio",
     "huggingface_hub",
     "kokoro>=0.9.4",
     "misaki[en]>=0.9.4",
@@ -22,6 +23,7 @@ dependencies = [
 
 [project.scripts]
 kokoro-vietnamese = "kokoro_vietnamese.cli:main"
+kokoro-vietnamese-gradio = "kokoro_vietnamese.gradio_app:main"
 
 [project.urls]
 Homepage = "https://github.com/iamdinhthuan/Kokoro-Vietnamese"
