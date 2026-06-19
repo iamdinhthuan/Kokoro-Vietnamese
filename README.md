@@ -1,10 +1,6 @@
 # Kokoro Vietnamese
 
-Inference-only project for Vietnamese Kokoro TTS.
-
-This repository intentionally does not include finetuning code, datasets,
-training configs, checkpoints, or StyleTTS2. Vietnamese phonemes are generated
-with the PyPI package `vig2p`.
+Vietnamese G2P is handled by [`vig2p`](https://pypi.org/project/vig2p/).
 
 ## Install
 
