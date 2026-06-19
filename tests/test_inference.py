@@ -6,9 +6,13 @@ from kokoro_vietnamese import (
     DEFAULT_CONFIG_FILE,
     DEFAULT_HF_REPO_ID,
     DEFAULT_MODEL_FILE,
+    DEFAULT_VOICE,
     DEFAULT_VOICEPACK_FILE,
+    VOICES,
+    list_voices,
     merge_audio_chunks,
     phonemize,
+    resolve_voicepack_filename,
     split_text,
 )
 
@@ -19,6 +23,39 @@ class KokoroVietnameseInferenceTest(unittest.TestCase):
         self.assertEqual(DEFAULT_MODEL_FILE, 'kokoro_vi.pth')
         self.assertEqual(DEFAULT_VOICEPACK_FILE, 'kokoro_vi_voicepack.pt')
         self.assertEqual(DEFAULT_CONFIG_FILE, 'config.json')
+        self.assertEqual(DEFAULT_VOICE, 'diem_trinh')
+
+    def test_voice_registry_covers_all_larvoice_speakers_without_pro_suffix(self):
+        expected = {
+            'diem_trinh',
+            'hung_thinh',
+            'mai_linh',
+            'mai_loan',
+            'manh_dung',
+            'my_yen',
+            'ngoc_huyen',
+            'phat_tai',
+            'thanh_dat',
+            'thuc_trinh',
+            'tuan_ngoc',
+            'storyvert',
+            'duc_an',
+            'duc_duy',
+        }
+
+        self.assertEqual(set(VOICES), expected)
+        self.assertEqual(list_voices(), sorted(expected))
+        for name, info in VOICES.items():
+            self.assertNotIn('pro', name)
+            self.assertNotIn('Pro', info['label'])
+            self.assertTrue(info['filename'].startswith('voicepacks/'))
+            self.assertTrue(info['filename'].endswith('.pt'))
+
+    def test_resolve_voicepack_filename_accepts_named_voices_and_explicit_paths(self):
+        self.assertEqual(resolve_voicepack_filename('mai_linh', None), 'voicepacks/mai_linh.pt')
+        self.assertEqual(resolve_voicepack_filename(None, 'local.pt'), 'local.pt')
+        with self.assertRaises(ValueError):
+            resolve_voicepack_filename('missing_voice', None)
 
     def test_split_text_keeps_sentence_punctuation(self):
         self.assertEqual(

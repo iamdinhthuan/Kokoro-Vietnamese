@@ -10,8 +10,25 @@ DEFAULT_HF_REPO_ID = 'contextboxai/Kokoro-Vietnamese'
 DEFAULT_MODEL_FILE = 'kokoro_vi.pth'
 DEFAULT_VOICEPACK_FILE = 'kokoro_vi_voicepack.pt'
 DEFAULT_CONFIG_FILE = 'config.json'
+DEFAULT_VOICE = 'diem_trinh'
 SAMPLE_RATE = 24000
 DEFAULT_CROSSFADE_MS = 50
+VOICES = {
+    'diem_trinh': {'label': 'Diễm Trinh', 'filename': 'voicepacks/diem_trinh.pt'},
+    'hung_thinh': {'label': 'Hưng Thịnh', 'filename': 'voicepacks/hung_thinh.pt'},
+    'mai_linh': {'label': 'Mai Linh', 'filename': 'voicepacks/mai_linh.pt'},
+    'mai_loan': {'label': 'Mai Loan', 'filename': 'voicepacks/mai_loan.pt'},
+    'manh_dung': {'label': 'Mạnh Dũng', 'filename': 'voicepacks/manh_dung.pt'},
+    'my_yen': {'label': 'Mỹ Yến', 'filename': 'voicepacks/my_yen.pt'},
+    'ngoc_huyen': {'label': 'Ngọc Huyền', 'filename': 'voicepacks/ngoc_huyen.pt'},
+    'phat_tai': {'label': 'Phát Tài', 'filename': 'voicepacks/phat_tai.pt'},
+    'thanh_dat': {'label': 'Thành Đạt', 'filename': 'voicepacks/thanh_dat.pt'},
+    'thuc_trinh': {'label': 'Thục Trinh', 'filename': 'voicepacks/thuc_trinh.pt'},
+    'tuan_ngoc': {'label': 'Tuấn Ngọc', 'filename': 'voicepacks/tuan_ngoc.pt'},
+    'storyvert': {'label': 'storyvert', 'filename': 'voicepacks/storyvert.pt'},
+    'duc_an': {'label': 'Đức An', 'filename': 'voicepacks/duc_an.pt'},
+    'duc_duy': {'label': 'đức duy', 'filename': 'voicepacks/duc_duy.pt'},
+}
 
 
 def split_text(text: str) -> list[str]:
@@ -61,6 +78,21 @@ def phonemize(text: str) -> str:
     return phonemize_text(text)
 
 
+def list_voices() -> list[str]:
+    return sorted(VOICES)
+
+
+def resolve_voicepack_filename(voice: str | None, voicepack: str | Path | None) -> str:
+    if voicepack:
+        return str(voicepack)
+    voice_name = voice or DEFAULT_VOICE
+    try:
+        return VOICES[voice_name]['filename']
+    except KeyError as exc:
+        available = ', '.join(list_voices())
+        raise ValueError(f'Unknown voice {voice_name!r}. Available voices: {available}') from exc
+
+
 def _download_or_resolve(repo_id: str, filename: str, local_path: str | Path | None) -> Path:
     if local_path:
         path = Path(local_path).expanduser().resolve()
@@ -78,6 +110,7 @@ class KokoroVietnamese:
         self,
         *,
         repo_id: str = DEFAULT_HF_REPO_ID,
+        voice: str | None = DEFAULT_VOICE,
         model_path: str | Path | None = None,
         voicepack_path: str | Path | None = None,
         config_path: str | Path | None = None,
@@ -91,7 +124,8 @@ class KokoroVietnamese:
 
         self.device = device
         self.model_path = _download_or_resolve(repo_id, DEFAULT_MODEL_FILE, model_path)
-        self.voicepack_path = _download_or_resolve(repo_id, DEFAULT_VOICEPACK_FILE, voicepack_path)
+        voicepack_filename = resolve_voicepack_filename(voice, voicepack_path)
+        self.voicepack_path = _download_or_resolve(repo_id, DEFAULT_VOICEPACK_FILE, voicepack_filename)
         self.config_path = _download_or_resolve(repo_id, DEFAULT_CONFIG_FILE, config_path)
 
         self.model = KModel(
