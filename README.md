@@ -47,36 +47,15 @@ Named voices:
 
 ```bash
 kokoro-vietnamese \
-  --text "Tường nhà khách." \
+  --text "Giữa một buổi chiều yên tĩnh, cô ấy kể lại câu chuyện bằng một giọng nói ấm áp và chậm rãi." \
   --output outputs/sample.wav \
-  --device cuda \
-  --print-phonemes
+  --voice diem_trinh \
+  --device cuda
 ```
-
-List voices:
 
 ```bash
 kokoro-vietnamese --list-voices
 ```
-
-Or run as a module:
-
-```bash
-python -m kokoro_vietnamese \
-  --text "Xin chào, hôm nay tôi đang kiểm tra giọng đọc tiếng Việt." \
-  --output outputs/sample.wav
-```
-
-Use a different voicepack:
-
-```bash
-kokoro-vietnamese \
-  --text "Xin chào." \
-  --voice mai_linh \
-  --output outputs/mai_linh.wav
-```
-
-Batch mode, one utterance per line:
 
 ```bash
 kokoro-vietnamese \
@@ -91,5 +70,5 @@ kokoro-vietnamese \
 from kokoro_vietnamese import KokoroVietnamese
 
 tts = KokoroVietnamese(device="cuda")
-audio, phonemes = tts.synthesize("Tường nhà khách.")
+audio, phonemes = tts.synthesize("Giữa một buổi chiều yên tĩnh, cô ấy kể lại câu chuyện bằng một giọng nói ấm áp và chậm rãi.")
 ```
