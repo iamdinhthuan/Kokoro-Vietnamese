@@ -1,4 +1,6 @@
 import unittest
+import tomllib
+from pathlib import Path
 
 import numpy as np
 
@@ -90,6 +92,11 @@ class KokoroVietnameseInferenceTest(unittest.TestCase):
         choices = build_voice_choices()
         self.assertEqual(len(choices), len(VOICES))
         self.assertIn(('Diễm Trinh', 'diem_trinh'), choices)
+
+    def test_project_pins_transformers_for_kokoro_albert_model(self):
+        pyproject = tomllib.loads(Path('pyproject.toml').read_text(encoding='utf-8'))
+        dependencies = pyproject['project']['dependencies']
+        self.assertIn('transformers>=4.48,<5', dependencies)
 
 
 if __name__ == '__main__':

@@ -18,6 +18,7 @@ dependencies = [
     "numpy",
     "soundfile",
     "torch",
+    "transformers>=4.48,<5",
     "vig2p>=0.1.0",
 ]
 
