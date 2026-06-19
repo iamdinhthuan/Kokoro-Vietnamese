@@ -14,6 +14,7 @@ DEFAULT_CONFIG_FILE = 'config.json'
 DEFAULT_VOICE = 'diem_trinh'
 SAMPLE_RATE = 24000
 DEFAULT_CROSSFADE_MS = 50
+DEFAULT_NORMALIZE_PEAK = 0.95
 VOICES = {
     'diem_trinh': {'label': 'Diễm Trinh', 'filename': 'voicepacks/diem_trinh.pt'},
     'hung_thinh': {'label': 'Hưng Thịnh', 'filename': 'voicepacks/hung_thinh.pt'},
@@ -71,6 +72,17 @@ def merge_audio_chunks(chunks: list[np.ndarray], crossfade_samples: int) -> np.n
         crossfaded = (merged[-overlap:] * fade_out) + (chunk[:overlap] * fade_in)
         merged = np.concatenate([merged[:-overlap], crossfaded, chunk[overlap:]])
     return merged.astype(np.float32, copy=False)
+
+
+def normalize_audio(audio: np.ndarray, peak: float | None = DEFAULT_NORMALIZE_PEAK) -> np.ndarray:
+    audio = np.asarray(audio, dtype=np.float32)
+    if peak is None or peak <= 0 or len(audio) == 0:
+        return audio
+
+    max_abs = float(np.max(np.abs(audio)))
+    if max_abs > peak:
+        audio = audio * (float(peak) / max_abs)
+    return audio.astype(np.float32, copy=False)
 
 
 def phonemize(text: str) -> str:
@@ -183,6 +195,7 @@ class KokoroVietnamese:
         *,
         speed: float = 1.0,
         crossfade_ms: int = DEFAULT_CROSSFADE_MS,
+        normalize_peak: float | None = DEFAULT_NORMALIZE_PEAK,
     ) -> tuple[np.ndarray, str]:
         import torch
 
@@ -202,4 +215,5 @@ class KokoroVietnamese:
             audio_chunks.append(audio.detach().cpu().numpy())
 
         crossfade_samples = round(SAMPLE_RATE * int(crossfade_ms) / 1000)
-        return merge_audio_chunks(audio_chunks, crossfade_samples), '\n'.join(phoneme_chunks)
+        audio = merge_audio_chunks(audio_chunks, crossfade_samples)
+        return normalize_audio(audio, normalize_peak), '\n'.join(phoneme_chunks)

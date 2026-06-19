@@ -39,6 +39,9 @@ sf.write("outputs/sample.wav", audio, 24000)
 print(phonemes)
 ```
 
+`synthesize()` peak-normalizes generated audio to `0.95` by default so WAV and
+Gradio playback do not clip. Pass `normalize_peak=None` to disable it.
+
 Use another voice:
 
 ```python

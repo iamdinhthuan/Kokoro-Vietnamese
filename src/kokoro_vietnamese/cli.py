@@ -8,6 +8,7 @@ from .core import (
     DEFAULT_CROSSFADE_MS,
     DEFAULT_HF_REPO_ID,
     DEFAULT_MODEL_FILE,
+    DEFAULT_NORMALIZE_PEAK,
     DEFAULT_VOICE,
     DEFAULT_VOICEPACK_FILE,
     SAMPLE_RATE,
@@ -31,6 +32,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument('--device', default='cuda', choices=['cuda', 'cpu'], help='Inference device')
     parser.add_argument('--speed', type=float, default=1.0, help='Speech speed multiplier')
     parser.add_argument('--crossfade-ms', type=int, default=DEFAULT_CROSSFADE_MS, help='Sentence merge crossfade')
+    parser.add_argument(
+        '--normalize-peak',
+        type=float,
+        default=DEFAULT_NORMALIZE_PEAK,
+        help='Scale audio down when peak amplitude exceeds this value. Use 0 to disable.',
+    )
     parser.add_argument('--print-phonemes', action='store_true', help='Print generated phonemes')
     parser.add_argument('--list-voices', action='store_true', help='Print available voice names and exit')
     return parser
@@ -79,6 +86,7 @@ def main(argv: list[str] | None = None) -> int:
                 text,
                 speed=args.speed,
                 crossfade_ms=args.crossfade_ms,
+                normalize_peak=args.normalize_peak or None,
             )
             if len(audio) == 0:
                 raise RuntimeError(f'No audio generated for batch row {index}.')
@@ -93,6 +101,7 @@ def main(argv: list[str] | None = None) -> int:
         _read_text_argument(args),
         speed=args.speed,
         crossfade_ms=args.crossfade_ms,
+        normalize_peak=args.normalize_peak or None,
     )
     if len(audio) == 0:
         raise RuntimeError('No audio generated.')

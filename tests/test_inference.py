@@ -8,11 +8,13 @@ from kokoro_vietnamese import (
     DEFAULT_CONFIG_FILE,
     DEFAULT_HF_REPO_ID,
     DEFAULT_MODEL_FILE,
+    DEFAULT_NORMALIZE_PEAK,
     DEFAULT_VOICE,
     DEFAULT_VOICEPACK_FILE,
     VOICES,
     list_voices,
     merge_audio_chunks,
+    normalize_audio,
     phonemize,
     prepare_transformers_for_kokoro,
     resolve_voicepack_filename,
@@ -28,6 +30,7 @@ class KokoroVietnameseInferenceTest(unittest.TestCase):
         self.assertEqual(DEFAULT_VOICEPACK_FILE, 'kokoro_vi_voicepack.pt')
         self.assertEqual(DEFAULT_CONFIG_FILE, 'config.json')
         self.assertEqual(DEFAULT_VOICE, 'diem_trinh')
+        self.assertEqual(DEFAULT_NORMALIZE_PEAK, 0.95)
 
     def test_voice_registry_covers_all_larvoice_speakers_without_pro_suffix(self):
         expected = {
@@ -77,6 +80,18 @@ class KokoroVietnameseInferenceTest(unittest.TestCase):
         np.testing.assert_allclose(merged[:6], np.ones(6, dtype=np.float32))
         np.testing.assert_allclose(merged[6:10], np.array([0.8, 0.6, 0.4, 0.2], dtype=np.float32))
         np.testing.assert_allclose(merged[10:], np.zeros(6, dtype=np.float32))
+
+    def test_normalize_audio_scales_only_when_peak_exceeds_limit(self):
+        loud = np.array([-2.0, 0.5, 1.0], dtype=np.float32)
+        normalized = normalize_audio(loud, peak=0.95)
+
+        self.assertEqual(normalized.dtype, np.float32)
+        self.assertLessEqual(float(np.max(np.abs(normalized))), 0.95)
+        np.testing.assert_allclose(normalized, loud * 0.475)
+
+        quiet = np.array([-0.5, 0.2, 0.7], dtype=np.float32)
+        np.testing.assert_allclose(normalize_audio(quiet, peak=0.95), quiet)
+        np.testing.assert_allclose(normalize_audio(loud, peak=None), loud)
 
     def test_vig2p_preserves_vietnamese_t_and_th_contrast(self):
         self.assertEqual(phonemize('Tường nhà khách.'), 'tˈyə↘ŋ ɲˈaː↘ xˈæ↗c.')
