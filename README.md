@@ -43,7 +43,42 @@ Named voices:
 | `duc_an` | `voicepacks/duc_an.pt` |
 | `duc_duy` | `voicepacks/duc_duy.pt` |
 
-## Usage
+## Python API
+
+```python
+import soundfile as sf
+
+from kokoro_vietnamese import KokoroVietnamese
+
+tts = KokoroVietnamese(device="cuda", voice="diem_trinh")
+
+audio, phonemes = tts.synthesize(
+    "Giữa một buổi chiều yên tĩnh, cô ấy kể lại câu chuyện bằng một giọng nói ấm áp và chậm rãi."
+)
+
+sf.write("outputs/sample.wav", audio, 24000)
+print(phonemes)
+```
+
+Use another voice:
+
+```python
+tts = KokoroVietnamese(device="cuda", voice="mai_linh")
+audio, phonemes = tts.synthesize("Hôm nay trời trong xanh, gió thổi nhẹ qua hiên nhà.")
+```
+
+Use local files instead of downloading from Hugging Face:
+
+```python
+tts = KokoroVietnamese(
+    device="cuda",
+    model_path="kokoro_vi.pth",
+    voicepack_path="voicepacks/diem_trinh.pt",
+    config_path="config.json",
+)
+```
+
+## CLI
 
 ```bash
 kokoro-vietnamese \
@@ -62,13 +97,4 @@ kokoro-vietnamese \
   --batch-file texts.txt \
   --voice diem_trinh \
   --output-dir outputs/batch
-```
-
-## Python API
-
-```python
-from kokoro_vietnamese import KokoroVietnamese
-
-tts = KokoroVietnamese(device="cuda")
-audio, phonemes = tts.synthesize("Giữa một buổi chiều yên tĩnh, cô ấy kể lại câu chuyện bằng một giọng nói ấm áp và chậm rãi.")
 ```
