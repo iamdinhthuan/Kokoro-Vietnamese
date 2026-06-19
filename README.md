@@ -5,6 +5,8 @@ Vietnamese G2P is handled by [`vig2p`](https://pypi.org/project/vig2p/).
 ## Install
 
 ```bash
+git clone https://github.com/iamdinhthuan/Kokoro-Vietnamese.git
+cd Kokoro-Vietnamese
 pip install -e .
 ```
 
@@ -20,7 +22,26 @@ when local paths are not provided:
 - `kokoro_vi_voicepack.pt`
 - `config.json`
 
-Voices: Diễm Trinh, Hưng Thịnh, Mai Linh, Mai Loan, Mạnh Dũng, Mỹ Yến, Ngọc Huyền, Phát Tài, Thành Đạt, Thục Trinh, Tuấn Ngọc, Storyvert, Đức An, Đức Duy.
+## Voices
+
+Use these names with `voice=...` in Python or `--voice ...` in the CLI.
+
+| Voice | Name |
+| --- | --- |
+| `diem_trinh` | Diễm Trinh |
+| `hung_thinh` | Hưng Thịnh |
+| `mai_linh` | Mai Linh |
+| `mai_loan` | Mai Loan |
+| `manh_dung` | Mạnh Dũng |
+| `my_yen` | Mỹ Yến |
+| `ngoc_huyen` | Ngọc Huyền |
+| `phat_tai` | Phát Tài |
+| `thanh_dat` | Thành Đạt |
+| `thuc_trinh` | Thục Trinh |
+| `tuan_ngoc` | Tuấn Ngọc |
+| `storyvert` | storyvert |
+| `duc_an` | Đức An |
+| `duc_duy` | đức duy |
 
 ## Python API
 
