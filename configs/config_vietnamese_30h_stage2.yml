@@ -1,0 +1,118 @@
+batch_size: 4
+epochs: 20
+epochs_1st: 20
+epochs_2nd: 20
+save_freq: 1
+pretrained_model: "../training/kokoro_base.pth"
+first_stage_path: "first_stage.pth"
+load_only_params: true
+second_stage_load_pretrained: false
+
+# Kokoro Vietnamese 30-hour fine-tuning config.
+# Dataset phonemes must come from scripts/prepare_vietnamese_dataset.py
+# so Stage 2 sees the same vig2p frontend used by inference.
+# Stage 2 uses batch size 4 to leave VRAM headroom after adversarial losses start.
+log_dir: "logs/kokoro-vi-30h"
+
+data_params:
+  train_data: "../training/vi_30h/train_list.txt"
+  val_data: "../training/vi_30h/val_list.txt"
+  root_path: "../dataset_vi_30h"
+  OOD_data: "../training/vi_30h/OOD_texts.txt"
+  min_length: 50
+  num_workers: 24
+
+preprocess_params:
+  sr: 24000
+  spect_params:
+    n_fft: 2048
+    win_length: 1200
+    hop_length: 300
+    n_mels: 80
+    fmin: 0
+    fmax: 8000
+
+model_params:
+  dim_in: 64
+  n_token: 178
+  hidden_dim: 512
+  style_dim: 128
+  max_dur: 50
+  multispeaker: false
+  n_mels: 80
+  dropout: 0.2
+  n_layer: 3
+  text_encoder_kernel_size: 5
+
+  decoder:
+    type: istftnet
+    upsample_rates: [10, 6]
+    upsample_kernel_sizes: [20, 12]
+    upsample_initial_channel: 512
+    resblock_kernel_sizes: [3, 7, 11]
+    resblock_dilation_sizes: [[1, 3, 5], [1, 3, 5], [1, 3, 5]]
+    gen_istft_n_fft: 20
+    gen_istft_hop_size: 5
+
+  diffusion:
+    embedding_mask_proba: 0.1
+    transformer:
+      num_layers: 3
+      num_heads: 8
+      head_features: 64
+      multiplier: 2
+    dist:
+      sigma_data: 0.2
+      estimate_sigma_data: true
+      mean: -3.0
+      std: 1.0
+
+  plbert:
+    hidden_size: 768
+    num_attention_heads: 12
+    intermediate_size: 2048
+    max_position_embeddings: 512
+    num_hidden_layers: 12
+    dropout: 0.1
+
+  slm:
+    model: "microsoft/wavlm-base-plus"
+    sr: 16000
+    hidden: 768
+    nlayers: 13
+    initial_channel: 64
+
+loss_params:
+  lambda_gen: 1.0
+  lambda_mel: 5.0
+  lambda_dur: 1.0
+  lambda_ce: 20.0
+  lambda_F0: 1.0
+  lambda_norm: 1.0
+  lambda_s2s: 1.0
+  lambda_mono: 1.0
+  lambda_slm: 1.0
+  lambda_diff: 0.0
+  lambda_sty: 0.0
+  TMA_epoch: 0
+  diff_epoch: 999
+  joint_epoch: 3
+
+optimizer_params:
+  lr: 0.0001
+  bert_lr: 0.00001
+  ft_lr: 0.0001
+
+F0_path: "Utils/JDC/bst.t7"
+ASR_config: "Utils/ASR/config.yml"
+ASR_path: "Utils/ASR/epoch_00080.pth"
+PLBERT_dir: "Utils/PLBERT/"
+
+slmadv_params:
+  min_len: 100
+  max_len: 360
+  batch_percentage: 0.5
+  iter: 10
+  thresh: 5
+  scale: 0.01
+  sig: 1.5

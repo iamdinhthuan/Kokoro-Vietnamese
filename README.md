@@ -2,6 +2,10 @@
 
 Vietnamese G2P is handled by [`vig2p`](https://pypi.org/project/vig2p/).
 
+This repository includes both the lightweight inference package and the
+Vietnamese fine-tuning recipe. Training instructions are in
+[`TRAINING.md`](TRAINING.md).
+
 ## Install
 
 ```bash
@@ -11,6 +15,12 @@ pip install -e .
 ```
 
 For CUDA, install the PyTorch build that matches your machine first.
+
+For training utilities:
+
+```bash
+pip install -e ".[training]"
+```
 
 ## Model Files
 

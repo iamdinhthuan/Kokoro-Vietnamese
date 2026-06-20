@@ -1,6 +1,14 @@
 # https://github.com/yl4579/StyleTTS2/blob/main/models.py
 from .istftnet import AdainResBlk1d
 from torch.nn.utils.parametrizations import weight_norm
+import transformers.utils.import_utils as import_utils
+
+for flag in ('_torchvision_available', '_librosa_available', '_cv2_available'):
+    if hasattr(import_utils, flag):
+        setattr(import_utils, flag, False)
+if hasattr(import_utils, '_torchvision_version'):
+    import_utils._torchvision_version = 'N/A'
+
 from transformers import AlbertModel
 import numpy as np
 import torch

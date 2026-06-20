@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "kokoro-vietnamese-inference"
+name = "kokoro-vietnamese"
 version = "0.1.0"
-description = "Inference-only Vietnamese Kokoro TTS package"
+description = "Vietnamese Kokoro TTS package with inference and training utilities"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
@@ -23,6 +23,25 @@ dependencies = [
     "vig2p>=0.1.0",
 ]
 
+[project.optional-dependencies]
+training = [
+    "accelerate",
+    "einops",
+    "einops-exts",
+    "librosa",
+    "matplotlib",
+    "misaki[en]>=0.9.4",
+    "modal",
+    "monotonic-align @ git+https://github.com/resemble-ai/monotonic_align.git",
+    "munch",
+    "nltk",
+    "pydub",
+    "pyyaml",
+    "tensorboard",
+    "torchaudio",
+    "tqdm",
+]
+
 [project.scripts]
 kokoro-vietnamese = "kokoro_vietnamese.cli:main"
 kokoro-vietnamese-gradio = "kokoro_vietnamese.gradio_app:main"
@@ -34,3 +53,6 @@ Model = "https://huggingface.co/contextboxai/Kokoro-Vietnamese"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/kokoro_vietnamese"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
