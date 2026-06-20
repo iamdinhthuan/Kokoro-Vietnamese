@@ -28,7 +28,6 @@ sudo apt-get install ffmpeg libsndfile1
 - `scripts/audit_vietnamese_frontend.py`: phoneme/frontend audit.
 - `scripts/extract_voicepack.py`: voicepack extraction.
 - `scripts/gradio_vietnamese_checkpoint.py`: local checkpoint testing.
-- `scripts/modal_vietnamese_*.py`: Modal training launchers.
 
 Datasets, train/val lists, checkpoints, voicepacks, logs, caches, and generated
 audio are intentionally ignored.
@@ -58,8 +57,8 @@ audio exactly.
 python scripts/prepare_vietnamese_dataset.py \
   --source-root /path/to/source_dataset \
   --metadata /path/to/source_dataset/metadata.csv \
-  --output-dataset dataset_vi_30h \
-  --output-training training/vi_30h \
+  --output-dataset dataset_vi \
+  --output-training training/vi \
   --min-duration 0.6 \
   --max-duration 30 \
   --clean
@@ -92,12 +91,15 @@ to your local path or set `pretrained_model_url` in the config.
 
 ## Train
 
+Use the provided config closest to your run, or copy one under `configs/` and
+update its `data_params` paths to match your preprocessed dataset.
+
 Stage 1:
 
 ```bash
 cd StyleTTS2
 accelerate launch train_first.py \
-  --config_path ../configs/config_vietnamese_30h_stage1.yml
+  --config_path ../configs/your_stage1_config.yml
 ```
 
 Stage 2:
@@ -105,50 +107,25 @@ Stage 2:
 ```bash
 cd StyleTTS2
 accelerate launch train_second.py \
-  --config_path ../configs/config_vietnamese_30h_stage2.yml
-```
-
-Multi-speaker configs:
-
-```bash
-cd StyleTTS2
-accelerate launch train_first.py \
-  --config_path ../configs/config_vietnamese_30h_multispeaker_stage1.yml
-accelerate launch train_second.py \
-  --config_path ../configs/config_vietnamese_30h_multispeaker_stage2.yml
+  --config_path ../configs/your_stage2_config.yml
 ```
 
 Checkpoints are written under `StyleTTS2/logs/` and are ignored by git.
 
 ## Test Checkpoints
 
+Point these paths at the log directory, cache directory, audio directory, and
+speaker registry from your own run.
+
 ```bash
 python scripts/gradio_vietnamese_checkpoint.py \
-  --log-dir StyleTTS2/logs/kokoro-vi-30h-ms \
-  --cache-dir gradio_cache/vi_30h_ms \
-  --audio-dir dataset_vi_30h/audio \
-  --speakers-path training/vi_30h/speakers.json \
+  --log-dir StyleTTS2/logs/your-run \
+  --cache-dir gradio_cache/your-run \
+  --audio-dir dataset_vi/audio \
+  --speakers-path training/vi/speakers.json \
   --device cuda \
   --share
 ```
-
-## Modal
-
-The Modal launchers expect local preprocessing to be finished first. They upload
-preprocessed metadata/lists and train on Modal volumes without uploading local
-datasets into the image.
-
-```bash
-modal run scripts/modal_vietnamese_larvoice_train.py \
-  --stage both \
-  --epochs-stage1 10 \
-  --epochs-stage2 10 \
-  --batch-size-stage1 20 \
-  --batch-size-stage2 16 \
-  --clean-log
-```
-
-Edit the dataset paths and volume names inside the Modal scripts for your run.
 
 ## Verification
 

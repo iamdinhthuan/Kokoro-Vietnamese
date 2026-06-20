@@ -14,6 +14,10 @@ class VietnameseMultispeakerTrainingTest(unittest.TestCase):
         training_doc = (REPO_ROOT / 'TRAINING.md').read_text(encoding='utf-8')
 
         self.assertNotIn('--target-duration-hours 30', training_doc)
+        self.assertNotIn('dataset_vi_30h', training_doc)
+        self.assertNotIn('training/vi_30h', training_doc)
+        self.assertNotIn('## Modal', training_doc)
+        self.assertNotIn('modal run', training_doc)
         self.assertIn('uses every valid metadata row by default', training_doc)
 
     def test_multispeaker_configs_are_opt_in_and_enabled(self):
