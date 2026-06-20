@@ -33,7 +33,7 @@ REMOTE_STAGE2_CONFIG = REMOTE_WORK / 'config_vietnamese_larvoice_multispeaker_st
 SOURCE_TAR_NAME = 'dataset_voxcpm_larvoice.tar'
 TRAINING_NAME = 'vi_larvoice'
 META_NAME = 'dataset_vi_larvoice_meta'
-PRETRAINED_NAME = 'pretrained_larvoice_stage1_seed.pth'
+PRETRAINED_NAME = 'kokoro_base.pth'
 
 
 volume = modal.Volume.from_name(VOLUME_NAME, create_if_missing=True)
@@ -160,7 +160,6 @@ def _prepare_volume_impl(force_unpack: bool = False) -> dict[str, Any]:
             tar.extractall(REMOTE_SOURCE)
 
     _copy_tree(REMOTE_UPLOADS / f'training/{TRAINING_NAME}', REMOTE_TRAINING / TRAINING_NAME)
-    shutil.copy2(REMOTE_UPLOADS / f'training/{PRETRAINED_NAME}', REMOTE_TRAINING / PRETRAINED_NAME)
     _copy_tree(REMOTE_UPLOADS / META_NAME, REMOTE_WORK / META_NAME)
 
     stats_path = REMOTE_WORK / f'{META_NAME}/stats.json'

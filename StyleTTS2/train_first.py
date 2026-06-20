@@ -38,6 +38,7 @@ from models import *
 from meldataset import build_dataloader
 from kokoro_symbols import TextCleaner
 from kokoro_tb_utils import prepare_test_tokens, extract_voicepack, run_kokoro_inference
+from pretrained_utils import ensure_pretrained_model
 from utils import *
 from losses import *
 from optimizers import build_optimizer
@@ -180,6 +181,10 @@ def main(config_path):
 
     with accelerator.main_process_first():
         if config.get("pretrained_model", "") != "":
+            config["pretrained_model"] = ensure_pretrained_model(
+                config["pretrained_model"],
+                config.get("pretrained_model_url"),
+            )
             model, optimizer, start_epoch, iters = load_checkpoint(
                 model,
                 optimizer,

@@ -58,13 +58,15 @@ audio exactly.
 python scripts/prepare_vietnamese_dataset.py \
   --source-root /path/to/source_dataset \
   --metadata /path/to/source_dataset/metadata.csv \
-  --target-duration-hours 30 \
   --output-dataset dataset_vi_30h \
   --output-training training/vi_30h \
   --min-duration 0.6 \
   --max-duration 30 \
   --clean
 ```
+
+The command uses every valid metadata row by default. Only pass
+`--target-duration-hours` when you intentionally want to cap a dataset.
 
 Run the frontend audit before spending GPU time:
 
@@ -77,13 +79,16 @@ python scripts/audit_vietnamese_frontend.py \
 
 ## Base Checkpoint
 
-Put the Kokoro base checkpoint at:
+Training configs point to:
 
 ```text
 training/kokoro_base.pth
 ```
 
-This file is not committed.
+This file is not committed. If it is missing, `train_first.py` downloads the
+Kokoro base checkpoint from `hexgrad/Kokoro-82M` automatically before loading
+the pretrained weights. To use another base checkpoint, set `pretrained_model`
+to your local path or set `pretrained_model_url` in the config.
 
 ## Train
 

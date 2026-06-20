@@ -30,6 +30,7 @@ from torch.utils.tensorboard import SummaryWriter
 from meldataset import build_dataloader
 from kokoro_symbols import TextCleaner
 from kokoro_tb_utils import prepare_test_tokens, extract_voicepack, run_kokoro_inference
+from pretrained_utils import ensure_pretrained_model
 
 from Utils.ASR.models import ASRCNN
 from Utils.JDC.model import JDCNet
@@ -242,6 +243,10 @@ def main(config_path):
 
     # load models if there is a model
     if load_pretrained:
+        config["pretrained_model"] = ensure_pretrained_model(
+            config["pretrained_model"],
+            config.get("pretrained_model_url"),
+        )
         model, optimizer, start_epoch, iters = load_checkpoint(
             model,
             optimizer,

@@ -131,7 +131,6 @@ def prepare_volume(force_unpack: bool = False) -> dict[str, Any]:
             tar.extractall(REMOTE_SOURCE)
 
     _copy_tree(REMOTE_UPLOADS / 'training/vi_100h', REMOTE_TRAINING / 'vi_100h')
-    shutil.copy2(REMOTE_UPLOADS / 'training/kokoro_base.pth', REMOTE_TRAINING / 'kokoro_base.pth')
     _copy_tree(REMOTE_UPLOADS / 'dataset_vi_100h_meta', REMOTE_WORK / 'dataset_vi_100h_meta')
 
     stats_path = REMOTE_WORK / 'dataset_vi_100h_meta/stats.json'

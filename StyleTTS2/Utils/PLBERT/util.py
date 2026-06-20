@@ -1,6 +1,14 @@
 import os
 import yaml
 import torch
+import transformers.utils.import_utils as import_utils
+
+for flag in ('_torchvision_available', '_librosa_available', '_cv2_available'):
+    if hasattr(import_utils, flag):
+        setattr(import_utils, flag, False)
+if hasattr(import_utils, '_torchvision_version'):
+    import_utils._torchvision_version = 'N/A'
+
 from transformers import AlbertConfig, AlbertModel
 
 class CustomAlbert(AlbertModel):
