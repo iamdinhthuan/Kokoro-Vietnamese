@@ -9,6 +9,7 @@ from kokoro_vietnamese import (
     DEFAULT_HF_REPO_ID,
     DEFAULT_MODEL_FILE,
     DEFAULT_NORMALIZE_PEAK,
+    DEFAULT_ONNX_FILE,
     DEFAULT_VOICE,
     DEFAULT_VOICEPACK_FILE,
     VOICES,
@@ -27,6 +28,7 @@ class KokoroVietnameseInferenceTest(unittest.TestCase):
     def test_defaults_point_to_public_artifacts(self):
         self.assertEqual(DEFAULT_HF_REPO_ID, 'contextboxai/Kokoro-Vietnamese')
         self.assertEqual(DEFAULT_MODEL_FILE, 'kokoro_vi.pth')
+        self.assertEqual(DEFAULT_ONNX_FILE, 'kokoro_vi.onnx')
         self.assertEqual(DEFAULT_VOICEPACK_FILE, 'kokoro_vi_voicepack.pt')
         self.assertEqual(DEFAULT_CONFIG_FILE, 'config.json')
         self.assertEqual(DEFAULT_VOICE, 'diem_trinh')
@@ -114,6 +116,35 @@ class KokoroVietnameseInferenceTest(unittest.TestCase):
         dependencies = pyproject['project']['dependencies']
         self.assertIn('transformers>=4.48,<5', dependencies)
         self.assertIn('packaging', dependencies)
+        self.assertEqual(pyproject['project']['optional-dependencies']['onnx'], ['onnx', 'onnxruntime'])
+
+    def test_onnx_helpers_prepare_runtime_inputs(self):
+        from kokoro_vietnamese.onnx_utils import phonemes_to_input_ids, select_voice_style, speed_input
+
+        np.testing.assert_array_equal(
+            phonemes_to_input_ids('ab?', {'a': 11, 'b': 12}, context_length=8),
+            np.asarray([[0, 11, 12, 0]], dtype=np.int64),
+        )
+        with self.assertRaisesRegex(ValueError, 'Phoneme sequence too long'):
+            phonemes_to_input_ids('abcd', {'a': 1, 'b': 2, 'c': 3, 'd': 4}, context_length=5)
+
+        voicepack = np.zeros((4, 1, 256), dtype=np.float32)
+        voicepack[0, :, :] = 1
+        voicepack[2, :, :] = 3
+        voicepack[3, :, :] = 4
+        np.testing.assert_array_equal(select_voice_style(voicepack, 1), voicepack[0])
+        np.testing.assert_array_equal(select_voice_style(voicepack, 3), voicepack[2])
+        np.testing.assert_array_equal(select_voice_style(voicepack, 999), voicepack[3])
+        np.testing.assert_array_equal(speed_input(1.25), np.asarray(1.25, dtype=np.float32))
+
+    def test_onnx_cli_defaults(self):
+        from kokoro_vietnamese.export_onnx import DEFAULT_ONNX_FILE as EXPORT_ONNX_FILE
+        from kokoro_vietnamese.export_onnx import build_parser as build_export_parser
+        from kokoro_vietnamese.onnx_cli import build_parser as build_onnx_parser
+
+        self.assertEqual(EXPORT_ONNX_FILE, 'kokoro_vi.onnx')
+        self.assertEqual(build_export_parser().parse_args([]).output, 'outputs/kokoro_vi.onnx')
+        self.assertEqual(build_onnx_parser().parse_args(['--text', 'Xin chào']).device, 'cpu')
 
     def test_transformers_preflight_imports_albert_model(self):
         prepare_transformers_for_kokoro()

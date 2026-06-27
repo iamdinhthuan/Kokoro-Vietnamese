@@ -9,6 +9,7 @@ import numpy as np
 
 DEFAULT_HF_REPO_ID = 'contextboxai/Kokoro-Vietnamese'
 DEFAULT_MODEL_FILE = 'kokoro_vi.pth'
+DEFAULT_ONNX_FILE = 'kokoro_vi.onnx'
 DEFAULT_VOICEPACK_FILE = 'kokoro_vi_voicepack.pt'
 DEFAULT_CONFIG_FILE = 'config.json'
 DEFAULT_VOICE = 'diem_trinh'

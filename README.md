@@ -29,6 +29,7 @@ The CLI downloads these files from
 when local paths are not provided:
 
 - `kokoro_vi.pth`
+- `kokoro_vi.onnx`
 - `kokoro_vi_voicepack.pt`
 - `config.json`
 
@@ -116,6 +117,36 @@ kokoro-vietnamese \
   --voice diem_trinh \
   --output-dir outputs/batch
 ```
+
+## ONNX Runtime
+
+Install ONNX dependencies:
+
+```bash
+pip install -e ".[onnx]"
+```
+
+Export the PyTorch checkpoint to ONNX:
+
+```bash
+kokoro-vietnamese-export-onnx \
+  --output outputs/kokoro_vi.onnx
+```
+
+Run ONNX Runtime inference:
+
+```bash
+kokoro-vietnamese-onnx \
+  --text "Tường nhà khách đã được sơn lại." \
+  --onnx outputs/kokoro_vi.onnx \
+  --output outputs/onnx.wav \
+  --device cpu \
+  --print-phonemes
+```
+
+When `--onnx` is omitted, the command downloads `kokoro_vi.onnx` from the
+Hugging Face model repo. Install `onnxruntime-gpu` and pass `--device cuda` to
+use CUDAExecutionProvider when available.
 
 ## Gradio
 

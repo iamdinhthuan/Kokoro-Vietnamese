@@ -24,6 +24,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+onnx = [
+    "onnx",
+    "onnxruntime",
+]
 training = [
     "accelerate",
     "einops",
@@ -44,7 +48,9 @@ training = [
 
 [project.scripts]
 kokoro-vietnamese = "kokoro_vietnamese.cli:main"
+kokoro-vietnamese-export-onnx = "kokoro_vietnamese.export_onnx:main"
 kokoro-vietnamese-gradio = "kokoro_vietnamese.gradio_app:main"
+kokoro-vietnamese-onnx = "kokoro_vietnamese.onnx_cli:main"
 
 [project.urls]
 Homepage = "https://github.com/iamdinhthuan/Kokoro-Vietnamese"

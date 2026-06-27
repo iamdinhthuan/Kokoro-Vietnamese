@@ -12,6 +12,7 @@ outputs/
 *.wav
 *.mp3
 *.flac
+*.onnx
 *.pth
 !StyleTTS2/Utils/ASR/epoch_00080.pth
 *.pt
